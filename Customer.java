@@ -14,56 +14,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Customer {
-    static Scanner in = new Scanner(System.in);
     static Random random = new Random();
 
-    public static void main(String[]args) {
-        int customerTotal = 3; //assume
-        double storeRating = 8.0;
-        int bookVariety = 10;
-        double averagePopularity = 7.5;
-        int days = 30;
-        int playerLevel = 3;
-
-        for (int i = 1; i <= customerTotal; i++) {
-            System.out.println("\nHi, Customer " + i + "! Your feedback matters!");
-            System.out.println("Yo, rate us between 1 and 10");
-            System.out.println("----------------------------");
-            System.out.println("Customer " + i + " feedback: ");
-            int rating = getRating();
-            int level = getCustomerLevel(storeRating, bookVariety, averagePopularity, days, playerLevel, rating);
-            showCustomerFeedback(i, rating, level);
-            System.out.println("\n---------------------------");
-        }
-    }
-    public static int getRating() {
-        System.out.print("Give a rating (1-10): ");
-        int rating = in.nextInt();
-        while (rating < 1 || rating > 10) {
-            System.out.print("Oops! that rating is out of range :(");
-            rating = in.nextInt();
-        }
-        return rating;
-    }
-    public static int getCustomerLevel(double storeRating, int bookVariety, double averagePopularity, int days, int playerLevel, int rating) {
-        double score = storeRating * 0.3 + bookVariety * 0.2 + averagePopularity * 0.3 + days * 0.1 + playerLevel * 0.5 + rating * 1.0;
-        if (score >= 50) {
-            return 5;
-        } else if (score >= 40) {
-            return 4;
-        } else if (score >= 30) {
-            return 3;
-        } else if (score >= 20) {
-            return 2;
-        } else {
-            return 1;
-        }
-    }
-    public static void showCustomerFeedback(int customerNumber, int rating, int level){
-        System.out.println("Customer " + customerNumber + " gave a rating of " + rating + " / 10 ");
-        System.out.println("Customer's level is: " + level);
-        System.out.println("Thanks a lot for your feedback!");
-    }
     public static int randomnessLevel(Product[] slots, int days, int bookVariety, int level, String username){
         int customer;
         // total percentage 100%
