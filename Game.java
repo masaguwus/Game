@@ -1,3 +1,14 @@
+/*
+ Abdullah Hasan Muhajir
+ NIM : 245150200111075
+ Diny Eka Zharafah
+ NIM : 245150207111088
+ Jason Manuel
+ NIM : 245150201111050
+ Ni Putu Nadiendha Nirzanova Dewi
+ NIM : 245150200111067
+ */
+
 package ProjekPemdas;
 
 import javax.print.MultiDocPrintService;
@@ -70,7 +81,7 @@ public class Game {
      */
     public void showMainMenu(String username) {
         Main.line();
-        System.out.println("Main Menu");
+        System.out.println("Main Menu\n");
         showMainMenuInfo(username);
         Product.product((int)Account.player[Account.searchIndexAccountStr(username)].getDays());
         System.out.print("""
@@ -99,7 +110,8 @@ public class Game {
                 1. Upgrade Level
                 2. Upgrade Storage
                 3. Buy Goods
-                4. Back
+                4. Add Book to Slot
+                5. Back
                 Option : """);
         int option = Main.scanner.nextInt();
         Main.scanner.nextLine();
@@ -107,12 +119,27 @@ public class Game {
             case 1 -> upgradeLevelMenu(username);
             case 2 -> upgradeStorageMenu(username);
             case 3 -> buyGoodsMenu(username);
-            case 4 -> showMainMenu(username);
+            case 4 -> addBookToSlot(Account.player[Account.searchIndexAccountStr(username)].getStorage(), username);
+            case 5 -> showMainMenu(username);
             default -> System.out.println("Invalid option!");
         }
         if (option > 3) {
             showMainMenu(username);
         }
+    }
+
+    public void addBookToSlot(Product[] storage, String username) {
+        Main.line();
+        System.out.println("Add Book to Slot");
+        Storage.showStorage(Account.player[Account.searchIndexAccountStr(username)].getStorage());
+        if (storage == null) {
+            System.out.println("Your storage is empty!");
+            showMainMenu(username);
+            return;
+        }
+        System.out.print("Book's title you want to add : ");
+        String title = Main.scanner.nextLine();
+        Slot.addBookToSlot(storage, username, title);
     }
 
     public void buyGoodsMenu(String username) {
@@ -121,17 +148,26 @@ public class Game {
 
     public void upgradeLevelMenu(String username) {
         long level = Account.player[Account.searchIndexAccountStr(username)].getLevel();
-        long price = (long) (Math.pow(level, 2)) * 2 / 10 * 100000;
         long balance = Account.getBalanceByUsername(username);
+        long price = (long)(Math.pow(level, 2)) * 2 / 10 + 100000;
+        System.out.println("You need Rp." + (price) + " to upgrade your level!");
+        System.out.println("Your balance right now : Rp." + balance);
+        System.out.print("Do you want to continue ? (y/n) : ");
+        boolean flag = Main.scanner.next().equalsIgnoreCase("n");
+        if (flag) {
+            showMainMenu(username);
+            return;
+        }
         if (price > balance) {
             System.out.println();
             System.out.println("You don't have enough balance to upgrade your level!");
-            return;
+            showMainMenu(username);
         } else {
             Account.player[Account.searchIndexAccountStr(username)].setLevel(level + 1);
             Account.player[Account.searchIndexAccountStr(username)].setBalance(balance - price);
             System.out.println();
             System.out.println("You have successfully upgraded your level!");
+            showMainMenu(username);
         }
     }
 
@@ -224,14 +260,21 @@ public class Game {
                     Option :                     """);
         int option = Main.scanner.nextInt();
         Main.scanner.nextLine();
+        Product[] slots = Account.player[Account.searchIndexAccountStr(username)].getSlots();
         switch (option) {
-            case 1 -> myBooksInfo(Account.player[Account.searchIndexAccountStr(username)].getStorage(), username);
-            case 2 -> manufacturerBooksInfo(username);
-            case 3 -> checkInfoMenu(username);
-            default -> System.out.println("Invalid option!");
-        }
-        if (option > 3) {
-            checkBookInfoMenu(username);
+            case 1 :
+                myBooksInfo(Account.player[Account.searchIndexAccountStr(username)].getStorage(), username);
+                break;
+            case 2 :
+                manufacturerBooksInfo(username);
+                break;
+            case 3 :
+                checkInfoMenu(username);
+                break;
+            default :
+                System.out.println("Invalid option!");
+                checkBookInfoMenu(username);
+                break;
         }
     }
 
@@ -283,8 +326,8 @@ public class Game {
         System.out.print("Book's title you want to inspect more : ");
         String title = Main.scanner.nextLine();
         Product book = Product.getBooksByTitle(title);
-        if (book == null) {
-            System.out.println("Book not found!");
+        if (book == null || title == null) {
+            System.out.println("Title's not exist in manufacturer's books list");
             return;
         }
         System.out.println("Title          : " + book.getNamaBarang());
@@ -297,16 +340,33 @@ public class Game {
     public void storageBooksInfo (Product[]storage, String username){
         String header = username + "'s books in storage : ";
         System.out.println(header);
-        int j = 1;
+        int j = 0;
         for (int i = 0; i < storage.length; i++) {
             if (storage[i] == null) {
                 continue;
             }
             long price = storage[i].getSellPrice();
-            System.out.print((j+1) + ". " + storage[i].getNamaBarang() + ", (Rp." + price + ")\n");
+            System.out.print((j + 1) + ". " + storage[i].getNamaBarang() + ", (Rp." + price + ")\n");
+            j++;
+        }
+        header = username + "'s books in slots : ";
+        System.out.println(header);
+        j = 0;
+        Product[] slots = Account.player[Account.searchIndexAccountStr(username)].getSlots();
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i] == null) {
+                continue;
+            }
+            long price = slots[i].getSellPrice();
+            System.out.print((j + 1) + ". " + slots[i].getNamaBarang() + ", (Rp." + price + ")\n");
             j++;
         }
         Main.line();
+        if (storage == null &&  Account.player[Account.searchIndexAccountStr(username)].getSlots() == null) {
+            System.out.println("You dont have any books to display!");
+            showMainMenu(username);
+            return;
+        }
         bookInfo();
         showMainMenu(username);
     }
@@ -331,11 +391,15 @@ public class Game {
         } else {
             storageLevel = 1;
         }
+        int plus = storageLevel > 2 ? 5 : 10;
         System.out.println("Storage level : " + storageLevel);
         System.out.println("Storage space : " + storageTotal);
+        long price = (long) (Math.pow(storageLevel, 2) - storageLevel) * 10000 + 50000;
+        System.out.println("Upgrade price : " + price);
+        System.out.println("Your balance  : " + Account.player[index].getBalance());
+        System.out.println("Storage's space after upgrade : " + (storageTotal + plus));
         System.out.print("Do you want to upgrade to the next level ? (y/n) : ");
         boolean flag = Main.scanner.next().equalsIgnoreCase("y");
-        long price = (long) (Math.pow(storageLevel, 2) - storageLevel) * 10000 + 50000;
         if (balance > price) {
             Account.player[index].setBalance(balance - price);
         } else {
@@ -343,15 +407,13 @@ public class Game {
             upgradeStorageMenu(username);
             return;
         }
-        int plus = storageLevel > 2 ? 5 : 10;
         if (flag) {
             Product[] temp = new Product[storageTotal + plus];
             System.arraycopy(player.getStorage(), 0, temp, 0, storageTotal);
             Account.player[index].setStorage(temp);
             System.out.println("Storage level has been increased");
         }
-        Main.line();
-        upgradeStorageMenu(username);
+        showMainMenu(username);
     }
     public void slotsUpgrade (String username){
         int index = Account.searchIndexAccountStr(username);
@@ -374,11 +436,13 @@ public class Game {
         } else {
             slotsLevel = 1;
         }
+        int plus = 5;
         System.out.println("Slots level   : " + slotsLevel);
         System.out.println("Slots space   : " + slotsTotal);
         long price = (long) (Math.pow(slotsLevel, 2) - slotsLevel) * 15000 + 50000;
         System.out.println("Upgrade price : " + price);
         System.out.println("Your balance  : " + Account.player[index].getBalance());
+        System.out.println("Slots space after upgrade : " + (slotsTotal + plus));
         System.out.print("Do you want to upgrade to the next level ? (y/n) : ");
         boolean flag = Main.scanner.next().equalsIgnoreCase("y");
         if (balance > price) {
@@ -390,15 +454,13 @@ public class Game {
             upgradeStorageMenu(username);
             return;
         }
-        int plus = 5;
         if (flag) {
             Product[] temp = new Product[slotsLevel + plus];
             System.arraycopy(player.getSlots(), 0, temp, 0, slotsLevel);
             Account.player[index].setStorage(temp);
-            System.out.println("Storage level has been increased");
+            System.out.println("Slots level has been increased");
         }
-        Main.line();
-        upgradeStorageMenu(username);
+        showMainMenu(username);
     }
     public void productBooksBuy (String username){
         String rarity = "";
@@ -422,54 +484,58 @@ public class Game {
         int j = 0;
         for (int i = 0; i < 50; i++) {
             if (rarity.contains(Product.products[i].getRarity())) {
-                System.out.println((j + 1) + ". " + Product.products[i].getNamaBarang() + ", (Sell : " + Product.products[i].getSellPrice() + "), (Buy : " + Product.products[i].getPurchase() + ")");
+                System.out.println((j + 1) + ". " + Product.products[i].getNamaBarang() + ", (Sell : " + Product.products[i].getSellPrice() + "), (Buy : " + Product.products[i].getPurchase() + "), (Rarity : " + Product.products[i].getRarity() + ")");
                 j++;
             }
         }
+        System.out.print("---------------------------------------------");
         Main.line();
-        int option = 0;
+        String option = "";
         boolean flag = true;
-        if (flag) {
-            System.out.print("Book you want to buy : ");
-            option = Main.scanner.nextInt();
-            Main.scanner.nextLine();
-            System.out.print("Are you sure ? (y/n) : ");
-            flag = Main.scanner.nextLine().equalsIgnoreCase("y");
-        }
-        option--;
-        int i = 50;
-        while (j != option && i > 0) {
-            if (rarity.contains(Product.products[i].getRarity())) {
-                j--;
-            }
-            i--;
-        }
+        System.out.print("Book's title you want to buy : ");
+        option = Main.scanner.nextLine();
         long balance = Account.getBalanceByUsername(username);
         long price = 0;
         int quantity;
-        i++;
-        if (price > balance) {
-            System.out.println("Not enough balance!");
+        System.out.print("Quantity : ");
+        quantity = Main.scanner.nextInt();
+        Product book = Product.getBooksByTitle(option);
+        if (book == null) {
+            System.out.println("Book not found!");
+            showMainMenu(username);
             return;
         }
-        while (true) {
-            System.out.print("Quantity : ");
-            quantity = Main.scanner.nextInt();
-            Main.scanner.nextLine();
-            price = Product.products[i].getPurchase() * quantity;
-            if (quantity > Product.products[i].getQuantity()) {
-                System.out.println("Out of stock!");
-                continue;
-            }
-            if (price > balance) {
-                System.out.println("Not enough balance!");
-                continue;
-            }
-            break;
+
+        price = book.getPurchase() * quantity;
+        if (price >= balance) {
+            System.out.println("Not enough balance!");
+            manageStoreMenu(username);
+            return;
         }
-        Storage.addProductToStorage(username, i, quantity);
+        Main.scanner.nextLine();
+        if (Product.getBooksByTitle(option) == null) {
+            System.out.println("Book not found!");
+            showMainMenu(username);
+        }
+        System.out.println("Price Total  : Rp." + price);
+        System.out.println("Your Balance : Rp." + balance);
+        System.out.print("Are you sure ? (y/n) : ");
+        flag = Main.scanner.nextLine().equalsIgnoreCase("y");
+        if (!flag) {
+            manageStoreMenu(username);
+            return;
+        }
+        if (quantity > Product.getBooksByTitle(option).getQuantity()) {
+            System.out.println("Out of stock!");
+        }
+        if (price > balance) {
+            System.out.println("Not enough balance!");
+            showMainMenu(username);
+            return;
+        }
+        Storage.addProductToStorage(username, option, quantity);
         Account.player[Account.searchIndexAccountStr(username)].setBalance(balance - price);
-        System.out.println("Your purchase : " + quantity + " Books titled '" + Product.products[i].getNamaBarang() + "' for " + price);
+        System.out.println("Your purchase : " + quantity + " Books titled '" + Product.getBooksByTitle(option).getNamaBarang() + "' for " + price);
         showMainMenu(username);
     }
     public void productBooksInfo (String username) {
@@ -478,7 +544,7 @@ public class Game {
         System.out.println(header);
         for (int i = 0; i < 51; i++) {
             String price = currencyFormatter.format(Product.products[i].getSellPrice());
-            System.out.print((i + 1) + ". " + Product.products[i].getNamaBarang() + ", (" + price + ")\n");
+            System.out.println((i + 1) + ". " + Product.products[i].getNamaBarang() + ", (" + price + ").   Rarity : " + Product.products[i].getRarity() + "\n");
         }
         System.out.println();
         bookInfoMan();
@@ -489,6 +555,17 @@ public class Game {
         int bookVariety = Account.player[index].getSlots().length;
         int level = (int) Account.player[index].getLevel();
         int days = (int) Account.player[index].getDays();
+        int j = 0;
+        for (int i = 0; i < Account.player[index].getSlots().length; i++) {
+            if (Account.player[index].getSlots()[i] == null || Account.player[index].getSlots()[i].getQuantity() <= 0) {
+                j++;
+            }
+        }
+        if (j >= Account.player[index].getSlots().length) {
+            System.out.println("Your slots storage is empty, please fill it first!");
+            showMainMenu(username);
+            return;
+        }
         Account.player[Account.searchIndexAccountStr(username)].setDays(Account.player[Account.searchIndexAccountStr(username)].getDays() + 1);
         Customer.randomBuyCustomer(Account.player[index].getSlots(), username, bookVariety, level, days);
         showMainMenu(username);
