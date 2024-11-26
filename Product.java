@@ -1,17 +1,15 @@
+/*
+ Abdullah Hasan Muhajir
+ NIM : 245150200111075
+ Diny Eka Zharafah
+ NIM : 245150207111088
+ Jason Manuel
+ NIM : 245150201111050
+ Ni Putu Nadiendha Nirzanova Dewi
+ NIM : 245150200111067
+ */
 package ProjekPemdas;
 
-class Restock {
-    public void restock(int index) {
-        Storage storage = new Storage();
-        Product[] storageTemp = Storage.getStorage().clone();
-        for (int i = 0; i < storageTemp.length - 1; i++) {
-            if (storageTemp[i] == null) {
-                storageTemp[i] = Product.products[index];
-                storage.upgradeStorage(storageTemp, index);
-            }
-        }
-    }
-}
 public class Product {
     private String namaBarang;
     private long purchase;
@@ -169,7 +167,7 @@ public class Product {
     }
     public static Product getBooksByTitle(String title) {
         for (int i = 0; i < products.length; i++) {
-            if (products[i].getNamaBarang().equalsIgnoreCase(title)) {
+            if (products[i].getNamaBarang().toLowerCase().contains(title.toLowerCase())) {
                 return products[i];
             }
         }
