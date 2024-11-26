@@ -1,28 +1,82 @@
+/*
+ Abdullah Hasan Muhajir
+ NIM : 245150200111075
+ Diny Eka Zharafah
+ NIM : 245150207111088
+ Jason Manuel
+ NIM : 245150201111050
+ Ni Putu Nadiendha Nirzanova Dewi
+ NIM : 245150200111067
+ */
 package ProjekPemdas;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+class ConsoleProgressBar {
+    public static void main(String[] args) {
+        int total = 147;
+        for (int i = 0; i <= total; i++) {
+            printProgress(i, total);
+            try {
+                if (i > 140) {
+                    Thread.sleep(150);
+                } else {
+                    Thread.sleep(20);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void printProgress(int current, int total) {
+        int barLength = 73;
+        int progress = (int) ((double) current / total * barLength);
+
+        String bar = "           ⟦";
+        for (int i = 0; i < barLength; i++) {
+            if (i < progress) {
+                bar += "▰";
+            } else {
+                bar += "▱";
+            }
+        }
+        bar += "⟧ " + (int)((current * 68.5 / 100) * (147 * 68.5 / 100) / (total * 68.5 / 100)) + "%";
+        System.out.print("\r" + bar);
+    }
+}
+
+
 public class LoginSession {
     static Scanner scanner = new Scanner(System.in);
     static Account obj = new Account();
     static Game game = new Game();
-    public static void welcome() {
-        System.out.print("""
-                                               ▒█░░▒█ █▀▀ █░░ █▀▀ █▀▀█ █▀▄▀█ █▀▀\s
-                                               ▒█▒█▒█ █▀▀ █░░ █░░ █░░█ █░▀░█ █▀▀\s
-                                               ▒█▄▀▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░░▀ ▀▀▀
-                """);
+    public static void welcome() throws InterruptedException {
+        String[] welcomeA = {
+                "                                                 ▒█░░▒█ █▀▀ █░░ █▀▀ █▀▀█ █▀▄▀█ █▀▀\s",
+                "                                                 ▒█▒█▒█ █▀▀ █░░ █░░ █░░█ █░▀░█ █▀▀\s",
+                "                                                 ▒█▄▀▄█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀ ▀░░░▀ ▀▀▀"
+        };
         Main.thickLine();
-        System.out.print("""
-                ▀██▀  ▀██▀                                  █             ▄▄█▀▀▀▄█                     ██             ▀██▀  ▀█▀                  ▀██    ▄  \s
-                 ██    ██   ▄▄▄▄    ▄▄▄▄   ▄▄▄▄   ▄▄ ▄▄▄       ▄▄▄▄     ▄█▀     ▀    ▄▄▄   ▄▄ ▄▄ ▄▄   ▄▄▄    ▄▄▄▄      ▀█▄  ▄▀   ▄▄▄▄   ▄▄▄ ▄▄▄   ██  ▄██▄ \s
-                 ██▀▀▀▀██  ▀▀ ▄██  ██▄ ▀  ▀▀ ▄██   ██  ██     ██▄ ▀     ██         ▄█  ▀█▄  ██ ██ ██   ██  ▄█   ▀▀      ██  █   ▀▀ ▄██   ██  ██   ██   ██  \s
-                 ██    ██  ▄█▀ ██  ▄ ▀█▄▄ ▄█▀ ██   ██  ██     ▄ ▀█▄▄    ▀█▄      ▄ ██   ██  ██ ██ ██   ██  ██            ███    ▄█▀ ██   ██  ██   ██   ██  \s
-                ▄██▄  ▄██▄ ▀█▄▄▀█▀ █▀▄▄█▀ ▀█▄▄▀█▀ ▄██▄ ██▄    █▀▄▄█▀     ▀▀█▄▄▄▄▀   ▀█▄▄█▀ ▄██ ██ ██▄ ▄██▄  ▀█▄▄▄▀        █     ▀█▄▄▀█▀  ▀█▄▄▀█▄ ▄██▄  ▀█▄▀                                                                                                                                     \s
-                """);
+        for (int i = 0; i < welcomeA.length; i++) {
+            System.out.println(welcomeA[i]);
+            Thread.sleep(500);
+        }
         Main.thickLine();
-
+        String[] logo = {
+                "    ▀██▀  ▀██▀                                  █             ▄▄█▀▀▀▄█                     ██            ", " ▀██▀  ▀█▀                  ▀██    ▄  \n",
+                "     ██    ██   ▄▄▄▄    ▄▄▄▄   ▄▄▄▄   ▄▄ ▄▄▄       ▄▄▄▄", "     ▄█▀     ▀    ▄▄▄   ▄▄ ▄▄ ▄▄   ▄▄▄    ▄▄▄▄      ▀█▄  ▄▀   ▄▄▄▄   ▄▄▄ ▄▄▄   ██  ▄██▄ \n",
+                "     ██▀▀▀▀██  ▀▀ ▄██  ██▄ ▀  ▀▀ ▄██   ██  ██     ██▄ ▀     ██         ▄█  ▀█▄  ██ ██ ██   ██  ▄█   ▀▀", "      ██  █   ▀▀ ▄██   ██  ██   ██   ██  \n",
+                "     ██    ██  ▄█▀ ██  ▄ ▀█▄▄ ▄█▀ ██   ██  ██     ▄ ▀█▄▄", "    ▀█▄      ▄ ██   ██  ██ ██ ██   ██  ██            ███    ▄█▀ ██   ██  ██   ██   ██  \n",
+                "    ▄██▄  ▄██▄ ▀█▄▄▀█▀ █▀▄▄█▀ ▀█▄▄▀█▀ ▄██▄ ██▄    █▀▄▄█▀ ", "    ▀▀█▄▄▄▄▀   ▀█▄▄█▀ ▄██ ██ ██▄ ▄██▄  ▀█▄▄▄▀        ", "█     ▀█▄▄▀█▀  ▀█▄▄▀█▄ ▄██▄  ▀█▄▀"
+        };
+        for (int i = 0; i < logo.length; i++) {
+            System.out.print(logo[i]);
+            Thread.sleep(350);
+        }
+        System.out.println();
+        Main.thickLine();
     }
     public static void lobby() {
         String username;
