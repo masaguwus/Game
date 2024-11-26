@@ -1,3 +1,13 @@
+/*
+ Abdullah Hasan Muhajir
+ NIM : 245150200111075
+ Diny Eka Zharafah
+ NIM : 245150207111088
+ Jason Manuel
+ NIM : 245150201111050
+ Ni Putu Nadiendha Nirzanova Dewi
+ NIM : 245150200111067
+ */
 package ProjekPemdas;
 
 class Account {
@@ -160,19 +170,24 @@ class Account {
         return -1;
     }
     public static Product getStorageBooksByTitle(String title) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                continue;
-            }
-            if (storage[i].getNamaBarang().equalsIgnoreCase(title)) {
-                return storage[i];
+        if (title == null) {
+            throw new NullPointerException("Title cannot be null");
+        }
+        if (slots == null) {
+            throw new NullPointerException("Slots cannot be null");
+        }
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i] != null) {
+                if (slots[i].getNamaBarang().toLowerCase().contains(title.toLowerCase())) {
+                    return slots[i];
+                }
             }
         }
         return null;
     }
     public static Product getSlotBookByTitle(String title) {
         for (int i = 0; i < slots.length; i++) {
-            if (slots[i].getNamaBarang().contains(title)) {
+            if (title.toLowerCase().contains(slots[i].getNamaBarang().toLowerCase())) {
                 return slots[i];
             }
         }
