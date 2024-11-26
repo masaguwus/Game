@@ -1,3 +1,13 @@
+/*
+ Abdullah Hasan Muhajir
+ NIM : 245150200111075
+ Diny Eka Zharafah
+ NIM : 245150207111088
+ Jason Manuel
+ NIM : 245150201111050
+ Ni Putu Nadiendha Nirzanova Dewi
+ NIM : 245150200111067
+ */
 package ProjekPemdas;
 
 import java.util.Scanner;
@@ -13,16 +23,13 @@ public class Main {
         System.out.println("-----------------------------------------------------------");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         LoginSession logInSession = new LoginSession();
-        Account account = new Account();
-        Game game = new Game();
-        Product product = new Product();
-        Storage storage = new Storage();
-        Customer customer = new Customer();
-        String username;
 
         logInSession.welcome();
+        ConsoleProgressBar.main(null);
+        System.out.println();
+        System.out.println();
         logInSession.lobby();
 
         }
